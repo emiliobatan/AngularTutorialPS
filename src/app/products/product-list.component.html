@@ -1,0 +1,73 @@
+<div class='card'>
+    <div class='card-header'>
+        {{pageTitle}}
+    </div>
+    <div card='card-body'>
+        <div card='row'>
+            <div class='col-md-2'>Filter by:</div>
+            <div class='col-md-4'>
+                <input type='text' 
+                        [(ngModel)] = 'listFilter'/>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-md-6'>
+                <h4>Filtered by: {{listFilter}}</h4>
+            </div>
+        </div>
+        <div class='table-responsive'>
+            <table class='table' *ngIf='products.length'>
+                <thead>
+                    <tr>
+                        <th>
+                            <button class='btn btn-primary'
+                                (click)='toggleImage()'>
+                                <!-- This ternary will show display Show Image when it is false and Hide Image when true -->
+                                {{showImage ? 'Hide Image' : 'Show'}} Image
+                            </button>
+                        </th>
+                        <th>Product</th>
+                        <th>Code</th>
+                        <th>Available</th>
+                        <th>Price</th>
+                        <th>5 Star Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor='let product of filteredProducts'>
+                        <td>
+                            <!--
+                                The '[]' with a property inside is called property binding 
+                             We can take properties of an image element to properties of the components class
+                            --> 
+                            <img    *ngIf='showImage'
+                                    [src] = 'product.imageUrl'
+                                    [title] = 'product.productName'
+                                    [style.width.px] = 'imageWidth'
+                                    [style.margin.px] = 'imageMargin'>
+                        </td>
+                        <td>
+                            <a [routerLink] = "['/products', product.productId]"> <!-- Need to set up the link parameters array. In the array we define the path of the route 
+                                                                                        to activate in the first element and pass the parameter value in the second element -->
+                            {{ product.productName }}
+                            </a>
+                        </td>
+                        <!-- We can use the pipe binding to specify lowercase properties for productCode and currency with parameters to show USD and Money symbol  -->
+                        <td>{{ product.productCode | lowercase | convertToSpaces:'-' }}</td> 
+                        <td>{{ product.releaseDate }}</td>
+                        <td>{{ product.price | currency:'USD':'symbol'}}</td>
+                        <td>
+                            <pm-star [rating]='product.starRating'
+                            (ratingClicked)='onRatingClicked($event)'>
+                            <!-- The $event passes along any data associated with a generated event 
+                            After we have created our event binding we need to write code for this method 
+                            in the product-list.component class  -->
+                            </pm-star>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
